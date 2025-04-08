@@ -1,6 +1,8 @@
 ---
-title: "Assignment_1"
-output: html_notebook
+title: "Chicago_LMP"
+output:
+  pdf_document: default
+  html_notebook: default
 ---
 
 ```{r}
@@ -10,7 +12,6 @@ library(MASS)
 library(ggdensity)
 library(data.table)
 library(dplyr)
-
 ```
 
 ```{r}
@@ -19,6 +20,7 @@ data_PJM <- fread('PJM Data.csv')
 data_Chicago <- fread('Data Chicago.csv')
 data_Milwaukee <- fread('Data Milwaukee.csv')
 data_CorpusChristi<- fread('Data Corpus Christi.csv')
+data_Austin <- fread('Data Austin.csv')
 ```
 
 ```{r}
@@ -249,6 +251,7 @@ ggplot(CGH_summary_daily, aes(mean_rt_lmp, color = factor(year))) +
     theme_classic() +
     theme(legend.position = 'top')
 ```
+
 ```{r}
 CGH_summary_daily <- data_CGH[, .(vol_lmp_rt = sd(total_lmp_rt),
   vol_lmp_da = sd(total_lmp_da)),
@@ -260,6 +263,7 @@ ggplot(CGH_summary_daily, aes(vol_lmp_rt, color = factor(year))) +
     theme_classic() +
     theme(legend.position = 'top')
 ```
+
 ```{r}
 vol_daily_CGH <- data_CGH[, .(vol_spread = sd(spread, na.rm = TRUE)),
 by = .(day, month, year)]
@@ -273,10 +277,10 @@ by = .(day, month, year)]
   theme(legend.position = 'top')
 
 ```
+
 ```{r}
 #We are only looking at August for each year. The vol spread is calculated as RT- DA. 2022 has the wides distribution indicating more volatility
 ```
-
 
 ```{r}
 #Comparing to the eastern Hub
@@ -299,10 +303,10 @@ by = .(day, month, year)]
 
 
 ```
+
 ```{r}
 #We see tighter spreads, and lower volatility for the Eastern Hub
 ```
-
 
 ```{r}
 #Plot the hourly by day for the month of April 2023 for Chicago GEN hum on RT LMP
@@ -317,6 +321,7 @@ ggplot(april_data, aes(x = hour, y = total_lmp_rt)) +
        x = "Hour", y = "RT LMP ($/MWh)") +
   theme_classic()
 ```
+
 ```{r}
 #Negative LMP prices indicate that there was a greater supply than demand of energy. Since we had a surplus of energy and no place to store the cost of carry pushed prices negative. 
 
@@ -335,6 +340,7 @@ ggplot(may_data, aes(x = hour, y = total_lmp_rt)) +
        x = "Hour", y = "RT LMP ($/MWh)") +
   theme_classic()
 ```
+
 ```{r}
 # Filter June 2023
 june_data <- data_CGH[month == 'Jun' & year == 2023]
@@ -404,9 +410,6 @@ for (p in season_plots) print(p)
 
 ```
 
-
-
-
 ```{r}
 #based on the above graph it looks like the highest is around 8:00 PM and the lowest is around 4:00 AM for april 2023. This makes sense as the energy consumption levels when everyone is asleep will be low vs when everyone is awake and home.  Though when looking across all seasons, other than spring we don't see prices go negative.
 ```
@@ -423,6 +426,7 @@ guides(color ='none') +
 theme_classic() +
 theme(legend.position = 'top')
 ```
+
 ```{r}
 #2022
 ggplot(vol_daily_CGH[year == 2022], aes(factor(month, levels = month.abb),
@@ -435,6 +439,7 @@ guides(color ='none') +
 theme_classic() +
 theme(legend.position = 'top')
 ```
+
 ```{r}
 #2023
 ggplot(vol_daily_CGH[year == 2023], aes(factor(month, levels = month.abb),
@@ -447,6 +452,7 @@ guides(color ='none') +
 theme_classic() +
 theme(legend.position = 'top')
 ```
+
 ```{r}
 library(lubridate)
 
@@ -464,6 +470,7 @@ vol_daily_CGH_wide <- vol_daily_CGH %>%
 vol_daily_CGH_wide %>%
   filter(vol_spread == max(vol_spread, na.rm = TRUE))
 ```
+
 ```{r}
 # 2022-12-2023 is the date with the most volatility
 ```
@@ -503,6 +510,7 @@ ggplot(daily_temp_Chicago, aes(date, degrees, color = factor(temp_series))) +
     axis.text.x = element_text(angle = 45, vjust = 1, hjust= 1)
   )
 ```
+
 ```{r}
 #There is a cyclical weather pattern. From a glance it looks like there are more heating days then cooling days. 
 ```
@@ -517,6 +525,7 @@ theme_classic() +
 theme(legend.position = 'top')
 
 ```
+
 ```{r}
 #We notice the shape of the distribution to be skewed to the left. Out of the three years, 2022 looks like it has the most cold temperature days sub 30 degrees Fahrenheit. I believe the bimodal distribution comes from the the increase in probability of temperatures to be near 40-50 and then 75, based on the seasons. 
 
@@ -533,6 +542,7 @@ ggplot(daily_temp_Chicago[temp_series == 'avg_temperature_degrees_fahrenheit'],
   theme(legend.position = 'top') +
   facet_wrap(~factor(month, levels = month.abb))
 ```
+
 ```{r}
 #this lines up with our hypothesis of the bimodal model, since we see peaks in the winter seasons and summer seasons. Two higher averages would output that shape.
 ```
@@ -562,6 +572,7 @@ Distribution Function',
   theme(legend.position = 'top')
 
 ```
+
 ```{r}
 #As stated above there is a clear FOSD with 2022 utilizing the highest daily average RT LMP. This is not consistent with the temperature graphs as we see 2023 is a warmer year than 2022. Temperature patterns may not have have translated to LMP patterns because there could have been more extreme volatile changes in certain days in 2022 (like in the winter), which drive LMP higher to be higher
 ```
@@ -581,6 +592,7 @@ ggplot(data_Chicago, aes(x = month, y = change_temp, color = factor(year))) +
 
 
 ```
+
 ```{r}
 ggplot(data_Chicago, aes(x = date, y = change_temp, color = factor(year))) +
   geom_line() +
@@ -590,6 +602,7 @@ ggplot(data_Chicago, aes(x = date, y = change_temp, color = factor(year))) +
        color = "Year") +
   theme_classic()
 ```
+
 ```{r}
 years <- c(2021, 2022, 2023)
 
@@ -599,9 +612,472 @@ for (y in years) {
 }
 
 ```
+
 ```{r}
 #We say the highest volatility in the average daily change in temp in 2022, which helps explain the increase in LMP. 
 ```
+
+```{r}
+ggplot(lmp_temp_Chicago, 
+       aes(x = temp, y= log(vol_spread)) ) +
+geom_hdr(xlim = c(-25, 100), ylim = c(0,10)) +
+geom_point(shape = 21) +
+labs(fill = '', alpha = 'Probability',
+     x = 'Average Daily Temperature (Degrees Fahrenheit)',
+      y = 'Logged Standard Deviation of (Lagged DA LMP - RT LMP)') + 
+  theme_classic() +
+  theme(legend.position = 'top') +
+  facet_grid(~year)
+```
+```{r}
+#25.We see notable outliers in 2022 and 2023. The outliers may be due to drastic changes in temperature DoD and the impact it had on LMP. If it drastically got colder or hotter on certain 2 day periods then the necessity for heating/cooling becomes much more apparent. 
+```
+
+```{r}
+library(MASS)
+library(plotly)
+dens_Chicago <- kde2d(lmp_temp_Chicago
+                      [date > '2021-01-01']
+                      $temp, log(lmp_temp_Chicago
+                                 [date>'2021-01-01']$vol_spread))
+
+plot_ly(x = dens_Chicago$x, y= dens_Chicago$y, z = dens_Chicago$z) %>%
+add_surface() %>%
+layout(scene = list(xaxis = list(title = 'Avg Temperature'),
+yaxis = list(title = 'Log.SD (DA LMP - RT LMP)'),
+zaxis = list(title = 'PDF')))
+
+```
+```{r}
+#26 We can asset X to be the avg temperature, Y to be Log of the standard deviation (DA LMP - RT LMP), and Z to be the PDF. Given that the graph represent the density (volume) where the average temperature is at a certain level for the log of (DA LMP - RT LMP). The peak is shows the highest density and the valleys show the lowest density.
+```
+
+
+```{r}
+lmp_cities <- data.table(
+  date = data_Milwaukee$date,
+  Milwaukee = data_Milwaukee$DA_LMP,
+  Chicago = data_Chicago$total_lmp_da,
+  
+  da_spread = data_Chicago$total_lmp_da - data_Milwaukee$DA_LMP
+  
+)
+
+ggplot(lmp_cities, aes (x=date, y= da_spread)) +
+  stat_summary(size = 0.2) +
+  labs(x = '', y = 'Chicago DA LMP - Milwaukee DA LP ($/MWh)' ) +
+    theme_classic()
+
+```
+
+```{r}
+
+lmp_cities <- data.table(
+  date = data_Milwaukee$date,
+  Milwaukee = data_Milwaukee$DA_LMP,
+  Chicago = data_Chicago$total_lmp_da,
+  Chicago_Weather = data_Chicago$avg_temperature_degrees_fahrenheit,
+  Milwaukee_Weather = data_Milwaukee$avg_temp_f,
+  
+  avg_weather_spread = data_Chicago$avg_temperature_degrees_fahrenheit -
+    data_Milwaukee$avg_temp_f,
+  da_spread = data_Chicago$total_lmp_da - data_Milwaukee$DA_LMP
+
+  
+  
+  
+)
+
+ggplot(lmp_cities, aes (x=avg_weather_spread, y= date)) +
+  stat_summary(size = 0.2) +
+  labs(x = '', y = 'Chicago DA LMP - Milwaukee DA LP ($/MWh)' ) +
+    theme_classic()
+```
+```{r}
+#27. We can see outliers in the weather spreada around the same time as the da_spread plot. To verify results it would be best to runa regression 
+```
+
+```{r}
+temperature_cities <- data.table(
+  date = data_Milwaukee$date,
+  Milwaukee = data_Milwaukee$avg_temp_f,
+  Chicago = data_Chicago$avg_temperature_degrees_fahrenheit) %>%
+unique()
+
+
+ggplot(temperature_cities, aes(x = Milwaukee, y = Chicago)) +
+geom_point(alpha = 0.2) +
+geom_abline(intercept = 0, slope = 1,color='red') +
+labs(x='Milwaukee Average Daily Temperature (Degrees Fahrenheit)',
+    y='Chicago Average Daily Temperature (Degrees Fahrenheit)',
+    color = '') +
+facet_wrap(~year(date)) +
+theme_classic()
+```
+```{r}
+lmp_cities_avg <- data.table(
+  date = data_Milwaukee$date,
+  Milwaukee_mean_lmp_da = data_Milwaukee$DA_LMP,
+  Chicago_mean_lmp_da = data_Chicago$total_lmp_da) %>%
+  unique()
+
+
+ggplot(lmp_cities_avg, aes(x = Milwaukee_mean_lmp_da, y = Chicago_mean_lmp_da)) +
+geom_point(alpha = 0.2) +
+geom_abline(intercept = 0, slope = 1,color='red') +
+labs(x='Milwaukee Average Daily Temperature (Degrees Fahrenheit)',
+    y='Chicago Average Daily Temperature (Degrees Fahrenheit)',
+    color = '') +
+facet_wrap(~year(date)) +
+theme_classic()
+
+
+```
+```{r}
+ggplot(temperature_cities %>% pivot_longer(!date, names_to = 'series', values_to =
+'temp'),
+aes(sample = temp, color = series)) +
+geom_qq() +
+geom_qq_line() +
+labs(x='Theoretical Normal Distribution Quantiles',
+y='Sample Quantiles (Degrees Fahrenheit)',
+color = '') +
+theme_classic() +
+theme(legend.position = 'top')
+
+```
+
+```{r}
+#29 
+temperature_cities_Austin_CC <- data.table(
+  date = data_Austin$date,
+  Austin = data_Austin$avg_temperature_degrees_fahrenheit,
+  CC = data_CorpusChristi$avg_temp_f) %>%
+unique()
+
+
+ggplot(temperature_cities_Austin_CC %>% pivot_longer(!date, names_to = 'series', values_to =
+'temp'),
+aes(sample = temp, color = series)) +
+geom_qq() +
+geom_qq_line() +
+labs(x='Theoretical Normal Distribution Quantiles',
+y='Sample Quantiles (Degrees Fahrenheit)',
+color = '') +
+theme_classic() +
+theme(legend.position = 'top')
+
+```
+```{r}
+#30 What do observe from plots, talk about relationship between price and weather. Is it linear? Descibe?
+
+
+#for the graph of Chicago and Milwaukee the Average temperature ranges from 0 to 45 degrees. As we see temperature decrease we see LMP increase showing a linear relationship from a glance. For Corpus Christi we also see a potenital exponteial relationship. the range in temperature goes from 20 degrees to 80 degrees, about 25% greater in range than Chicago. When we reach a min of 20 in Corpus Christi we see Real Time LMP shoot up to 2000, possibly due to lack of infrastructure to account for extreame weatehrs. Based on the line graphs they do seem to be drawn from the same distribution 
+
+```
+
+```{r}
+
+ggplot(data_Chicago[order(date)] %>%
+.[,prev_lmp_da := shift(total_lmp_da, type = 'lag'), by = hour],
+aes(x = date, y = total_lmp_da - prev_lmp_da)) +
+geom_point(shape = 21, size = 0.8, alpha = 0.5) +
+labs(x = '',y = 'DA LMP (t+1) - DA LMP (t)') +
+theme_classic()
+
+```
+```{r}
+#Each point represents the hourly difference in LMP prices in Chicago. Most changes over an hour are no different thats why they are surrounded near 0. Because the weather is not changing extremely for majority of the time. But some hourly changes have extreme changes in weather, which could be driving the change in LMP up or down. It seems the winter season for each month have the largest DoD changes 
+```
+
+```{r}
+#verify above
+#I hypothesize the grater change in temperature has greater DoD changes in DA LMP which is seen the most volatile in the winter season of each year.
+```
+
+
+```{r}
+
+ggplot(data_Chicago[order(date)] %>%
+.[,prev_lmp_da := shift(total_lmp_da, type = 'lag'), by = month],
+aes(x = date, y = total_lmp_da - prev_lmp_da)) +
+geom_point(shape = 21, size = 0.8, alpha = 0.5) +
+labs(x = '',y = 'DA LMP (t+1) - DA LMP (t)') +
+theme_classic()
+
+```
+```{r}
+
+data_Chicago$month_name <- factor(data_Chicago$month, levels = 
+  c("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+
+ggplot(data_Chicago[order(date)] %>%
+.[,prev_lmp_da := shift(total_lmp_da, type = 'lag'), by = day_of_week],
+aes(x = month_name, y = total_lmp_da - prev_lmp_da)) +
+geom_point(shape = 21, size = 0.8, alpha = 0.5) +
+labs(x = '',y = 'DA LMP (t+1) - DA LMP (t)') +
+facet_wrap(~year(date)) +
+  theme_classic()
+```
+```{r}
+
+ggplot(data_Chicago[order(date)] %>%
+.[,prev_lmp_da := shift(total_lmp_da, type = 'lag'), by = hour],
+aes(x = day_of_week, y = total_lmp_da - prev_lmp_da)) +
+geom_point(shape = 21, size = 0.8, alpha = 0.5) +
+labs(x = '',y = 'DA LMP (t+1) - DA LMP (t)') +
+#facet_wrap(~year(date)) +
+  theme_classic()
+
+```
+```{r}
+#33. We see that the change in spread occurs the most in the Winter months. Furthermore there is an increase in volatiltiy during the weekend as opposed to the weeday when people are working
+```
+
+
+```{r}
+#33
+
+internodal_spread <- data.table(date = data_Chicago$date,
+                    hour = data_Chicago$hour,
+                    year = data_Chicago$year,
+                    day_of_week = data_Chicago$day_of_week,
+                    month = data_Chicago$month,
+                    da_Chicago = data_Chicago$total_lmp_da,
+                    da_Milwaukee = data_Milwaukee$DA_LMP,
+                    da_CorpusChristi = data_CorpusChristi$DA_LMP) %>%
+  
+
+.[order(date)] %>%
+  .[,':=' (prev_da_Chicago = shift(da_Chicago, fill = NA, type = 'lag'),
+        prev_da_Milwaukee = shift(da_Milwaukee, fill = NA, type = 'lag'),
+        prev_da_CorpusChristi = shift(da_CorpusChristi, fill = NA, type = 'lag')), 
+        by = hour] %>%
+
+.[, ':=' (Chicago_da_spread = da_Chicago - prev_da_Chicago,
+          Milwaukee_da_spread = da_Milwaukee - prev_da_Milwaukee,
+          CorpusChristi_da_spread = da_CorpusChristi - prev_da_CorpusChristi)] %>%
+.[, spread_ratio := Chicago_da_spread/Milwaukee_da_spread]
+ 
+ 
+
+```
+
+```{r}
+
+internodal_spread$month_name <- factor(internodal_spread$month, levels = 
+  c("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+
+ggplot(internodal_spread[order(date) & year == 2021], aes(x = month_name, y = spread_ratio, color = factor(month_name))) +
+  geom_point(size = 2) +
+  labs(title = "Spread Ratio Chicago vs Milwauke",
+       x = "Hourly Change", y = "Spread Ratio",
+       color = "Year") +
+  #facet_wrap(~year(date)) +
+  
+  theme_minimal()
+```
+```{r}
+ggplot(internodal_spread[order(date) & year == 2022], aes(x = month_name, y = spread_ratio, color = factor(month_name))) +
+  geom_point(size = 2) +
+  labs(title = "Spread Ratio Chicago vs Milwauke",
+       x = "Hourly Change", y = "Spread Ratio",
+       color = "Year") +
+  #facet_wrap(~year(date)) +
+  
+  theme_minimal()
+
+```
+```{r}
+ggplot(internodal_spread[order(date) & year == 2023], aes(x = month_name, y = spread_ratio, color = factor(month_name))) +
+  geom_point(size = 2) +
+  labs(title = "Spread Ratio Chicago vs Milwauke",
+       x = "Hourly Change", y = "Spread Ratio",
+       color = "Year") +
+  #facet_wrap(~year(date)) +
+  
+  theme_minimal()
+```
+
+```{r}
+ggplot(internodal_spread[order(date)], aes(x = month_name, y = spread_ratio, color = factor(month_name))) +
+  geom_point(size = 2) +
+  labs(title = "Spread Ratio Chicago vs Milwauke",
+       x = "Hourly Change", y = "Spread Ratio",
+       color = "Year") +
+  facet_wrap(~year(date)) +
+  
+  theme_minimal()
+```
+```{r}
+#33 We can see the spreads have gotten tighter in 2023 compared to 2021 and 2022. Larger values indicate a greater magintude in difference between the DoD change in LMP prices in Chicago compared to Milwaukee. The tighter ratio the closer the DoD changes are in both cities. There may be more incentives for transmission and storage in 2023 in order to keep tighter spreads
+```
+
+```{r}
+
+internodal_spread$spread_ratio_ercot <- internodal_spread$Chicago_da_spread /
+internodal_spread$CorpusChristi_da_spread
+
+```
+
+```{r}
+
+ggplot(internodal_spread[order(date)], aes(x = month_name, y = spread_ratio_ercot, color = factor(month_name))) +
+  geom_point(size = 2) +
+  labs(title = "Spread Ratio Chicago vs Milwauke",
+       x = "Hourly Change", y = "Spread Ratio",
+       color = "Year") +
+  facet_wrap(~year(date)) +
+  
+  theme_minimal()
+```
+```{r}
+#34 Larger values indicate a higher difference in the DoD change in LMP in Chicago vs Corpus Christi. We want tighter spreads to help [fill in here] and this in turn impacts energy transmission and storage by [fill in here]
+```
+
+
+```{r}
+count1 <- sum(internodal_spread$spread_ratio > 1, na.rm = TRUE)
+count2 <- sum(internodal_spread$spread_ratio_ercot > 1, na.rm = TRUE)
+print(count1)
+print(count2)
+count3 <- sum(internodal_spread$spread_ratio > 0, na.rm = TRUE)
+count4 <- sum(internodal_spread$spread_ratio < 0, na.rm = TRUE)
+print(count3)
+print(count4)
+
+```
+```{r}
+#35. I have no idea how to interpret this honestly
+```
+
+```{r}
+internodal_spread[, lagged_spread_ratio := shift(spread_ratio, fill = NA, type = 'lag') ]
+internodal_spread[, lookahead_spread_ratio := lagged_spread_ratio/spread_ratio]
+
+plot_data <- melt(
+  internodal_spread,
+  id.vars = "date",
+  measure.vars = c("spread_ratio", "lookahead_spread_ratio"),
+  variable.name = "Metric",
+  value.name = "Value"
+)
+
+ggplot(plot_data, aes(x = date, y = Value, color = Metric)) +
+  # Plot spread_ratio with alpha = 0.5
+  geom_point(data = plot_data[Metric == "spread_ratio"],
+             shape = 21, size = 5, alpha = 0.5) +
+  
+  # Plot lookahead_spread_ratio with alpha = 1
+  geom_point(data = plot_data[Metric == "lookahead_spread_ratio"],
+             shape = 21, size = 0.3, alpha = 0.01) +
+
+  labs(
+    x = '',
+    y = 'Spread Ratios',
+    title = 'Spread Ratio vs Lookahead Spread Ratio Over Time',
+    color = 'Metric'
+  ) +
+  theme_classic()
+
+
+```
+```{r}
+```
+
+```{r}
+#36 this shows how the ratio changes hour over hour, and the magntitude of the change. In the graph we can see that the lookahead ratio is tighter around 0 compared to the former
+```
+
+```{r}
+daily_PJM <- fread('PJM Daily.csv')
+```
+
+
+```{r}
+ldc <- daily_PJM[, .(Date, Actual_load_GWh)] %>%
+.[, Date := as.Date(Date, format = "%m/%d/%Y")] %>%
+.[, rank := frank(-Actual_load_GWh) / .N, by = year(Date)]
+ggplot(ldc, aes(rank, Actual_load_GWh, color = factor(year(Date)))) +
+geom_line() +
+scale_x_continuous(expand = expand_scale(mult=c(0,0.1)), limits = c(0,NA))+
+scale_y_continuous(expand = expand_scale(mult=c(0,0.1))) +
+labs(x = 'Percent of Days', y = 'Actual Load (GWh)', color = '',
+title = 'PJM Annual Load Duration Curves') +
+theme_classic() +
+theme(plot.title = element_text(hjust=0.5),
+legend.position = 'top',
+plot.caption = element_text(hjust = 0))
+
+```
+```{r}
+#2018 has the highest demand for electrcity 
+```
+
+```{r}
+ldc <- daily_PJM[, .(Date, rtm_price)] %>%
+.[, Date := as.Date(Date, format = "%m/%d/%Y")] %>%
+.[, rank := frank(-rtm_price) / .N, by = year(Date)]
+ggplot(ldc, aes(rank, rtm_price, color = factor(year(Date)))) +
+geom_line() +
+scale_x_continuous(expand = expand_scale(mult=c(0,0.1)), limits = c(0,NA))+
+scale_y_continuous(expand = expand_scale(mult=c(0,0.1))) +
+labs(x = 'Percent of Days', y = 'RTM Price', color = '',
+title = 'PJM Annual Load Duration Curves') +
+theme_classic() +
+theme(plot.title = element_text(hjust=0.5),
+legend.position = 'top',
+plot.caption = element_text(hjust = 0))
+```
+```{r}
+#38. This is consistent with our conclusion as the Load is higher the price is higher
+```
+
+```{r}
+load_mw_comp <- data.table(date = data_Austin$date,
+                           load_mw_Austin = data_Austin$load_mw,
+                           load_mw_CorpusChristi = data_CorpusChristi$load_mw,
+                           load_mw_Milwaukee = data_Milwaukee$load_mw)
+
+# Convert from wide to long format
+load_mw_long <- pivot_longer(
+  load_mw_comp,
+  cols = starts_with("load_mw_"),
+  names_to = "city",
+  values_to = "load_mw"
+)
+
+
+ggplot(load_mw_long, aes(x = date, y = load_mw, color = city)) +
+  geom_line() +
+  labs(title = "Load in Megawatts Over Time",
+       x = "Date",
+       y = "Load (MW)",
+       color = "City") +
+  theme_minimal()
+
+
+```
+```{r}
+# Plot all cities on one plot
+ggplot(load_mw_long, aes(x = rank, y = load_mw, color = city)) +
+  geom_line() +
+  labs(
+    x = 'Percent of Days',
+    y = 'Load (MW)',
+    color = 'City-Year',
+    title = 'Annual Load Duration Curves'
+  ) +
+  theme_minimal() 
+```
+```{r}
+#39. Typically colder cities have higher loads
+```
+
 
 
 When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file).
