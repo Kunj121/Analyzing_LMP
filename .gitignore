@@ -1,0 +1,10 @@
+# Ignore data files
+*.csv
+*.rds
+*.xlsx
+data/
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
