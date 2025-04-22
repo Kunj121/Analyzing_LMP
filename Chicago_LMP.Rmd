@@ -574,7 +574,7 @@ Distribution Function',
 ```
 
 ```{r}
-#As stated above there is a clear FOSD with 2022 utilizing the highest daily average RT LMP. This is not consistent with the temperature graphs as we see 2023 is a warmer year than 2022. Temperature patterns may not have have translated to LMP patterns because there could have been more extreme volatile changes in certain days in 2022 (like in the winter), which drive LMP higher to be higher
+#As previously mentioned, 2022 exhibits first-order stochastic dominance (FOSD) with the highest daily average real-time LMP (Locational Marginal Price) across the observed years. Interestingly, this pattern does not align with the temperature data, as 2023 was generally warmer than 2022. One possible explanation for this inconsistency is that LMPs are more sensitive to short-term, extreme fluctuations rather than average seasonal temperatures. For instance, 2022 may have experienced more severe or abrupt cold spells—particularly during the winter months—which could have led to sharp spikes in electricity demand and, consequently, higher real-time LMPs.
 ```
 
 ```{r}
@@ -614,7 +614,7 @@ for (y in years) {
 ```
 
 ```{r}
-#We say the highest volatility in the average daily change in temp in 2022, which helps explain the increase in LMP. 
+#We observed the highest volatility in the average daily temperature changes in 2022, which likely contributed to the elevated LMPs that year by driving sudden shifts in electricity demand.
 ```
 
 ```{r}
@@ -630,7 +630,7 @@ labs(fill = '', alpha = 'Probability',
   facet_grid(~year)
 ```
 ```{r}
-#25.We see notable outliers in 2022 and 2023. The outliers may be due to drastic changes in temperature DoD and the impact it had on LMP. If it drastically got colder or hotter on certain 2 day periods then the necessity for heating/cooling becomes much more apparent. 
+#25.Notable outliers are observed in both 2022 and 2023, which may be attributed to drastic day-over-day (DoD) temperature swings. Such abrupt changes can significantly impact electricity demand, as sudden drops or spikes in temperature over short periods intensify the need for heating or cooling. This, in turn, can lead to sharp increases in LMPs during those specific windows. 
 ```
 
 ```{r}
@@ -649,7 +649,7 @@ zaxis = list(title = 'PDF')))
 
 ```
 ```{r}
-#26 We can asset X to be the avg temperature, Y to be Log of the standard deviation (DA LMP - RT LMP), and Z to be the PDF. Given that the graph represent the density (volume) where the average temperature is at a certain level for the log of (DA LMP - RT LMP). The peak is shows the highest density and the valleys show the lowest density.
+#26 In this analysis, we define X as the average temperature, Y as the logarithm of the standard deviation between Day-Ahead and Real-Time LMPs (log(DA LMP − RT LMP)), and Z as the probability density function (PDF). The resulting graph is a three-dimensional density plot that illustrates how frequently specific combinations of temperature and LMP volatility occur. The peaks in the graph represent the highest density areas, indicating that these temperature-volatility combinations are the most common. Conversely, the valleys indicate lower-density regions where such combinations are less frequent. This visualization helps highlight the relationship between temperature patterns and volatility in electricity pricing.
 ```
 
 
@@ -694,7 +694,7 @@ ggplot(lmp_cities, aes (x=avg_weather_spread, y= date)) +
     theme_classic()
 ```
 ```{r}
-#27. We can see outliers in the weather spreada around the same time as the da_spread plot. To verify results it would be best to runa regression 
+#27.We observe outliers in the weather spread around the same time periods as those in the Day-Ahead (DA) spread plot, suggesting a potential correlation. To validate this relationship and quantify its significance, it would be appropriate to run a regression analysis. 
 ```
 
 ```{r}
@@ -772,7 +772,7 @@ theme(legend.position = 'top')
 #30 What do observe from plots, talk about relationship between price and weather. Is it linear? Descibe?
 
 
-#for the graph of Chicago and Milwaukee the Average temperature ranges from 0 to 45 degrees. As we see temperature decrease we see LMP increase showing a linear relationship from a glance. For Corpus Christi we also see a potenital exponteial relationship. the range in temperature goes from 20 degrees to 80 degrees, about 25% greater in range than Chicago. When we reach a min of 20 in Corpus Christi we see Real Time LMP shoot up to 2000, possibly due to lack of infrastructure to account for extreame weatehrs. Based on the line graphs they do seem to be drawn from the same distribution 
+#In the graphs for Chicago and Milwaukee, the average temperature ranges from 0°F to 45°F. As temperature decreases, we observe a corresponding increase in LMP, suggesting a roughly linear relationship at first glance. In contrast, the graph for Corpus Christi shows a potentially exponential relationship. Here, temperatures range from 20°F to 80°F—about 25% greater in range compared to Chicago. Notably, when temperatures in Corpus Christi drop to around 20°F, Real-Time LMP spikes dramatically to nearly 2000, which may reflect the region’s limited infrastructure and preparedness for extreme cold weather events. Despite these regional differences, the overall patterns in the line graphs suggest that the data across the cities may have been drawn from similar underlying distributions. 
 
 ```
 
@@ -787,7 +787,7 @@ theme_classic()
 
 ```
 ```{r}
-#Each point represents the hourly difference in LMP prices in Chicago. Most changes over an hour are no different thats why they are surrounded near 0. Because the weather is not changing extremely for majority of the time. But some hourly changes have extreme changes in weather, which could be driving the change in LMP up or down. It seems the winter season for each month have the largest DoD changes 
+#Each point on the graph represents the hourly difference in LMP prices in Chicago. Most of these differences cluster around zero, indicating that, for the majority of the time, hourly price changes are minimal—likely due to stable weather conditions. However, there are noticeable outliers where the hourly LMP shifts dramatically. These extreme changes may be driven by sudden and significant weather fluctuations. Notably, the data suggests that the winter months exhibit the largest day-over-day (DoD) weather changes, which could be contributing to heightened volatility in LMP during that season. 
 ```
 
 ```{r}
@@ -833,7 +833,7 @@ labs(x = '',y = 'DA LMP (t+1) - DA LMP (t)') +
 
 ```
 ```{r}
-#33. We see that the change in spread occurs the most in the Winter months. Furthermore there is an increase in volatiltiy during the weekend as opposed to the weeday when people are working
+#33. We observe that the most significant changes in spread tend to occur during the winter months, likely due to more extreme and unpredictable weather patterns. Additionally, there is a noticeable increase in LMP volatility over the weekends compared to weekdays. This may be attributed to shifts in consumption patterns, as energy usage dynamics differ when people are at home rather than at work, potentially creating more demand uncertainty and pricing fluctuations.
 ```
 
 
